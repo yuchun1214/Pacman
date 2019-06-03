@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/barrier/img">
+        <file>bean.png</file>
+        <file>elfb.jpg</file>
+        <file>elfg.jpg</file>
+        <file>elfp.jpg</file>
+        <file>elfr.jpg</file>
+        <file>elfy.jpg</file>
+        <file>player.png</file>
+        <file>player2.jpg</file>
+        <file>res1.png</file>
+        <file>res2.png</file>
+        <file>res3.png</file>
+        <file>res4.png</file>
+        <file>res5.png</file>
+        <file>res6.png</file>
+        <file>resedge.png</file>
+    </qresource>
+    <qresource prefix="/barrier/config">
+        <file>maze.json</file>
+    </qresource>
+</RCC>
