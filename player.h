@@ -10,6 +10,13 @@
 #include <QGraphicsRectItem>
 
 #include "dot.h"
+#include "vertex.h"
+
+namespace  PlayerParms{
+    static QVector<QColor> DotColors = {
+        Qt::gray,Qt::green,Qt::red, Qt::blue, Qt::black
+    };
+}
 
 class Player : public QObject, public QGraphicsRectItem
 {
@@ -17,8 +24,9 @@ class Player : public QObject, public QGraphicsRectItem
 public:
     explicit Player(QObject *parent = nullptr);
     explicit Player(QPoint startPoint,QGraphicsScene * scene, QObject * parent = nullptr);
+    QVector<Vertex *> Vertices();
 signals:
-
+    void dotFinish();
 public slots:
 
     void move();
@@ -32,11 +40,16 @@ private:
     QPointF movingVectorPY;
     QPointF movingVectorNY;
     QTimer * timer;
+    QVector<Vertex *> vertices;
     QVector<QPointF> movingVectors;
     int graphArray[MAZE_WIDTH + 1][MAZE_HEIGHT + 1];
+    Vertex * tempVertex;
+    bool flag;
 
 private:
     void showGraphArray();
+
+
 };
 
 #endif // PLAYER_H

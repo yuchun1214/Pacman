@@ -21,6 +21,7 @@
 #include <QVector>
 #include "barrier.h"
 #include "debugnode.h"
+#include "vertex.h"
 #include "player.h"
 
 
@@ -43,6 +44,8 @@ private:
     QVector<Barrier * > barriers;
     QVector<debugNode *> debuggingNodes;
     QVector<QGraphicsLineItem *> debugginglines;
+    QVector<Vertex *> vertices;
+    QTimer * timer;
 
     void showDebugCoordinate();
     void loadMazeConfig(QString filename);
@@ -65,6 +68,8 @@ public slots:
     void debuggingButton();
     void nmodeButton();
     void testButton();
+    void checkVertex();
+
 
 
 };

@@ -11,8 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
 
     this->view->setFixedSize(900,1000);
     this->view->setSceneRect(50,250, 780,450);
-    player = new Player(QPoint(1,1),scene);
-//    scene->addItem(player);
+    player = new Player(QPoint(1,10),scene);
 
 #ifdef DEBUG
     showDebugCoordinate();
@@ -25,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->debugging,SIGNAL(clicked(bool)),this,SLOT(debuggingButton()));
     connect(ui->nmode, SIGNAL(clicked(bool)), this, SLOT(nmodeButton()));
     connect(ui->test, SIGNAL(clicked(bool)), this, SLOT(testButton()));
+    connect(player,SIGNAL(dotFinish()),this,SLOT(checkVertex()));
 }
 
 void MainWindow::resetBarriers(){
@@ -80,7 +80,7 @@ void MainWindow::loadMazeConfig(QString filename){
     QJsonArray component;
     QJsonArray parts;
     QJsonObject config = d.object();
-    qDebug()<<config;
+//    qDebug()<<config;
     QList<QString> keys = config.keys();
 //    QList<QString> keys;
 //    keys.push_back(QString("gap"));
@@ -144,7 +144,17 @@ void MainWindow::nmodeButton(){
 
 void MainWindow::testButton(){
 //    mirrorTheGraph(Ui::mirrorFunctionX_13,this->barriers);
-    this->player->move();
+//    this->player->move();
+    static int i = 0;
+    if(i < this->vertices.size()){
+        vertices[i]->hide();
+        ++i;
+    }
+}
+
+void MainWindow::checkVertex(){
+    this->vertices = player->Vertices();
+    qDebug()<<"vertices.size = "<<this->vertices.size();
 }
 
 Barrier * Ui::mirrorFunctionX_13(Barrier * barrier){

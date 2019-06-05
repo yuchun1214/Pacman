@@ -30,7 +30,8 @@ SOURCES += \
         dot.cpp \
         main.cpp \
         mainwindow.cpp \
-        player.cpp
+        player.cpp \
+        vertex.cpp
 
 HEADERS += \
         barrier.h \
@@ -38,7 +39,8 @@ HEADERS += \
         def.h \
         dot.h \
         mainwindow.h \
-        player.h
+        player.h \
+        vertex.h
 
 FORMS += \
         mainwindow.ui
