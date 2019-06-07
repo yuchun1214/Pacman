@@ -11,7 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
 
     this->view->setFixedSize(900,1000);
     this->view->setSceneRect(50,250, 780,450);
-    player = new Player(QPoint(1,10),scene);
+    this->path = new Path();
+    player = new Player(QPoint(1,10),scene,this->path);
 
 #ifdef DEBUG
     showDebugCoordinate();
@@ -145,11 +146,12 @@ void MainWindow::nmodeButton(){
 void MainWindow::testButton(){
 //    mirrorTheGraph(Ui::mirrorFunctionX_13,this->barriers);
 //    this->player->move();
-    static int i = 0;
-    if(i < this->vertices.size()){
-        vertices[i]->hide();
-        ++i;
-    }
+//    static int i = 0;
+//    if(i < this->vertices.size()){
+//        vertices[i]->hide();
+//        ++i;
+//    }
+    this->player->moveTo(QPoint(1,1));
 }
 
 void MainWindow::checkVertex(){

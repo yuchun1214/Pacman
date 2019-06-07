@@ -28,8 +28,10 @@ SOURCES += \
         barrier.cpp \
         debugnode.cpp \
         dot.cpp \
+        gameobject.cpp \
         main.cpp \
         mainwindow.cpp \
+        path.cpp \
         player.cpp \
         vertex.cpp
 
@@ -38,7 +40,9 @@ HEADERS += \
         debugnode.h \
         def.h \
         dot.h \
+        gameobject.h \
         mainwindow.h \
+        path.h \
         player.h \
         vertex.h
 

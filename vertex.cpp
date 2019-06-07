@@ -26,7 +26,7 @@ void Vertex::hide(){
 
 Dot * Vertex::addDots(QPointF dotPos){
     Dot * dot = new Dot(dotPos,this->color);
-//    this->scene->addItem(dot);
+    this->scene->addItem(dot);
     Dots.push_back(dot);
     return dot;
 }

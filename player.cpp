@@ -5,7 +5,7 @@ Player::Player(QObject *parent) : QObject(parent)
 
 }
 
-Player::Player(QPoint startPoint,QGraphicsScene * scene, QObject * parent):
+Player::Player(QPoint startPoint,QGraphicsScene * scene,Path * path, QObject * parent):
     QObject (parent),
     QGraphicsRectItem (),
     movingVectorPX(COORDINATE_SCALE, 0),
@@ -16,7 +16,9 @@ Player::Player(QPoint startPoint,QGraphicsScene * scene, QObject * parent):
     this->timer = new QTimer();
     this->scene = scene;
     timer->start(50);
-    connect(timer, SIGNAL(timeout()),this,SLOT(move()));
+    if(DEPLOY_DOTS){
+        connect(timer, SIGNAL(timeout()),this,SLOT(deployDots()));
+    }
 
     this->setPos(QPointF(COORDINATE_SCALE * startPoint.x() - PLAYER_EDGE / 2,COORDINATE_SCALE * startPoint.y() - PLAYER_EDGE / 2));
     this->setRect(0 , 0 , PLAYER_EDGE, PLAYER_EDGE);
@@ -34,9 +36,10 @@ Player::Player(QPoint startPoint,QGraphicsScene * scene, QObject * parent):
 
     tempVertex = new Vertex(scene);
     this->flag = false;
+    this->path = path;
 }
 
-void Player::move(){
+void Player::deployDots(){
 
     QPointF tempPos;
     int putInToStackAmounts = 0;
@@ -83,8 +86,9 @@ void Player::move(){
 
     // pop up
     if(!backTrackStack.size()){
-        disconnect(this->timer,SIGNAL(timeout()),this,SLOT(move()));
+        disconnect(this->timer,SIGNAL(timeout()),this,SLOT(deployDots()));
         vertices.append(tempVertex);
+
         emit dotFinish();
         return;
     }
@@ -104,12 +108,29 @@ QVector<Vertex *> Player::Vertices(){
     return vertices;
 }
 
-void Player::showGraphArray(){
-    QDebug deb = qDebug();
-    for(int i = 1; i < MAZE_WIDTH + 1; ++i){
-        for(int j = 1; j < MAZE_HEIGHT; ++j){
-            deb.nospace()<<this->graphArray[i][j];
-        }
-        qDebug()<<"\n";
+void Player::moveTo(QPoint target){
+
+    int maxTimes = 9;
+    int i = 0;
+    while (this->tinyCoordinate(this->pos()) != target && ++i < maxTimes) {
+        QPoint movingVector;
+        movingVector = path->giveMePath(this->tinyCoordinate(this->pos()),this->tinyCoordinate(target));
+        qDebug()<<"movingVector = "<<movingVector;
+        movingVector = this->BigCoordinate(movingVector);
+        movingVector += QPoint(int(this->pos().x()),int(this->pos().y()));
+        setPos(movingVector);
     }
+
+}
+
+QPoint Player::tinyCoordinate(QPoint target){
+    return QPoint(target.x()/COORDINATE_SCALE, target.y() / COORDINATE_SCALE);
+}
+
+QPoint Player::tinyCoordinate(QPointF target){
+     return QPoint(target.x()/COORDINATE_SCALE, target.y() / COORDINATE_SCALE);
+}
+
+QPoint Player::BigCoordinate(QPoint c){
+    return QPoint(c.x() * COORDINATE_SCALE, c.y() * COORDINATE_SCALE);
 }

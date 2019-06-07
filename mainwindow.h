@@ -22,6 +22,7 @@
 #include "barrier.h"
 #include "debugnode.h"
 #include "vertex.h"
+#include "path.h"
 #include "player.h"
 
 
@@ -41,6 +42,7 @@ private:
     QGraphicsScene * scene;
     QGraphicsView * view;
     Player * player;
+    Path * path;
     QVector<Barrier * > barriers;
     QVector<debugNode *> debuggingNodes;
     QVector<QGraphicsLineItem *> debugginglines;

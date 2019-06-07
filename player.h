@@ -11,6 +11,8 @@
 
 #include "dot.h"
 #include "vertex.h"
+#include "path.h"
+#include "gameobject.h"
 
 namespace  PlayerParms{
     static QVector<QColor> DotColors = {
@@ -18,18 +20,19 @@ namespace  PlayerParms{
     };
 }
 
-class Player : public QObject, public QGraphicsRectItem
+class Player :public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
 public:
     explicit Player(QObject *parent = nullptr);
-    explicit Player(QPoint startPoint,QGraphicsScene * scene, QObject * parent = nullptr);
+    explicit Player(QPoint startPoint,QGraphicsScene * scene,Path * path, QObject * parent = nullptr);
     QVector<Vertex *> Vertices();
 signals:
     void dotFinish();
 public slots:
 
-    void move();
+    void deployDots();
+    void moveTo(QPoint);
 
 
 private:
@@ -42,12 +45,15 @@ private:
     QTimer * timer;
     QVector<Vertex *> vertices;
     QVector<QPointF> movingVectors;
+    Path * path;
     int graphArray[MAZE_WIDTH + 1][MAZE_HEIGHT + 1];
     Vertex * tempVertex;
     bool flag;
 
 private:
-    void showGraphArray();
+    QPoint tinyCoordinate(QPoint);
+    QPoint tinyCoordinate(QPointF);
+    QPoint BigCoordinate(QPoint);
 
 
 };

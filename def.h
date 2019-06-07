@@ -11,6 +11,7 @@
 #define DEBUGNODE_SIZE 4
 #define PLAYER_EDGE 16
 #define DOT_SIZE 8
+#define DEPLOY_DOTS false
 
 #ifdef DEBUG
 #define BARRIER_CHECK_NUM 4
