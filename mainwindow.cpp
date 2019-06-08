@@ -31,21 +31,12 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     this->path = new Path(QPoint(1,1),scene,this->MazeArray());
 
     player = new Player(QPoint(1,10),scene,this->path);
+    player->setFlag(QGraphicsItem::ItemIsFocusable);
+    player->setFocus();
 
 #ifdef DEBUG
-//    showDebugCoordinate();
-//    int maze[MAZE_WIDTH + 1][MAZE_HEIGHT + 1];
+    showDebugCoordinate();
 
-
-    debugNode * node;
-    for(int i = 0; i < MAZE_WIDTH + 1; ++i){
-        for(int j = 0; j < MAZE_HEIGHT + 1; ++j){
-            if(!maze[i][j]){
-                node = new debugNode(i * COORDINATE_SCALE,j * COORDINATE_SCALE);
-                scene->addItem(node);
-            }
-        }
-    }
 #endif
     connect(ui->resetButton,SIGNAL(clicked(bool)),this,SLOT(resetBarriers()));
     connect(ui->load,SIGNAL(clicked(bool)),this,SLOT(loadBarriers()));
@@ -179,7 +170,7 @@ void MainWindow::testButton(){
 //        ++i;
 //    }
 //    this->player->moveTo(QPoint(1,1));
-    this->path->PathFinding(QPoint(3,1));
+    this->path->PathFinding(this->player->pos().toPoint(),QPoint(25,19));
 
 }
 

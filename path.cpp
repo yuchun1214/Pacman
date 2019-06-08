@@ -46,30 +46,57 @@ void Path::PathFinding(QPoint startPoint,QPoint target, int MaxStep){
         QPoint(0,1),
         QPoint(0,-1)
     };
+
     QVector<QPointF> nodes;
+    QVector<QPointF> forks;
+    QVector<int> consecutiveSteps;
+    int ableToGo = 0;
     QPointF p;
     nodes.push_back(this->pos());
+    forks.push_back(this->pos());
+
     qDebug()<<nodes;
+
     QPointF temp;
     debugNode * dn;
-    int step;
-    while (nodes.size()) {
+    int step = -1;
+    while (forks.size()) {
         // pop up
         p = nodes.last();
+
         p /= COORDINATE_SCALE;
+        if(p == target){
+            break;
+        }
+        graph[int(p.x())][int(p.y())] = true;
         dn = new debugNode(p.toPoint() * COORDINATE_SCALE);
         scene->addItem(dn);
         nodes.pop_back();
         for(int i = 0; i < movingVectors.size(); ++i){
             temp = p + movingVectors[i];
             if(!graph[int(temp.x())][int(temp.y())]){
-                graph[int(temp.x())][int(temp.y())] = true;
+                ++ableToGo;
 //                qDebug()<<temp<<"this step can go forward";
-                if(temp == target){
-                    return;
-                }
+
                 nodes.push_back(temp * 30);
             }
+        }
+
+        if(ableToGo > 1){ // means that p is fork
+            // put in the fork
+            forks.push_back(p);
+
+            // record the consecutive step
+            consecutiveSteps.push_back(step);
+
+            //zeroing the step;
+            step = -1;
+
+        }else if(ableToGo == 1){
+            ++step;
+        }else{// means that meet the dead street;
+            // pop the last forks;
+
         }
     }
 

@@ -8,11 +8,14 @@
 #include <QVector>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
+#include <QKeyEvent>
+#include <QList>
 
 #include "dot.h"
 #include "vertex.h"
 #include "path.h"
 #include "gameobject.h"
+#include "barrier.h"
 
 namespace  PlayerParms{
     static QVector<QColor> DotColors = {
@@ -33,6 +36,7 @@ public slots:
 
     void deployDots();
     void moveTo(QPoint);
+    void move();
 
 
 private:
@@ -43,6 +47,8 @@ private:
     QPointF movingVectorPY;
     QPointF movingVectorNY;
     QTimer * timer;
+    QPoint currentMovingVector;
+    QPoint lastMovingVector;
     QVector<Vertex *> vertices;
     QVector<QPointF> movingVectors;
     Path * path;
@@ -55,6 +61,13 @@ private:
     QPoint tinyCoordinate(QPointF);
     QPoint BigCoordinate(QPoint);
 
+
+
+
+
+    // QGraphicsItem interface
+protected:
+    void keyPressEvent(QKeyEvent *event);
 
 };
 

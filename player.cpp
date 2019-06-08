@@ -11,17 +11,21 @@ Player::Player(QPoint startPoint,QGraphicsScene * scene,Path * path, QObject * p
     movingVectorPX(COORDINATE_SCALE, 0),
     movingVectorNX(-COORDINATE_SCALE,0),
     movingVectorPY(0,COORDINATE_SCALE),
-    movingVectorNY(0,-COORDINATE_SCALE)
+    movingVectorNY(0,-COORDINATE_SCALE),
+    currentMovingVector(0,0),
+    lastMovingVector(0,0)
 {
     this->timer = new QTimer();
     this->scene = scene;
-    timer->start(50);
+    timer->start(10);
     if(DEPLOY_DOTS){
         connect(timer, SIGNAL(timeout()),this,SLOT(deployDots()));
     }
+//    timer = new QTimer();
 
-    this->setPos(QPointF(COORDINATE_SCALE * startPoint.x() - PLAYER_EDGE / 2,COORDINATE_SCALE * startPoint.y() - PLAYER_EDGE / 2));
-    this->setRect(0 , 0 , PLAYER_EDGE, PLAYER_EDGE);
+
+    this->setPos(startPoint * COORDINATE_SCALE);
+    this->setRect(- PLAYER_EDGE / 2 , - PLAYER_EDGE / 2 , PLAYER_EDGE, PLAYER_EDGE);
     scene->addItem(this);
     for(int i = 0; i < MAZE_WIDTH + 1; ++i){
         for(int j = 0; j < MAZE_HEIGHT + 1; ++j){
@@ -46,7 +50,7 @@ void Player::deployDots(){
 //    graphArray[int((this->pos().x() + PLAYER_EDGE / 2) / COORDINATE_SCALE)][int((this->pos().y() + PLAYER_EDGE / 2) / COORDINATE_SCALE)] = true;
 
     for(int i = 0, size = movingVectors.size(); i < size; ++i){
-        tempPos = QPointF(this->pos().x() + PLAYER_EDGE / 2 + movingVectors[i].x(), this->pos().y() + PLAYER_EDGE / 2 + movingVectors[i].y());
+        tempPos = QPointF(this->pos().x() + movingVectors[i].x(), this->pos().y() + movingVectors[i].y());
 //        qDebug()<<"tempPos"<<tempPos;
         if(scene->items(tempPos).size() < BARRIER_CHECK_NUM){
             if(!graphArray[int(tempPos.x() / COORDINATE_SCALE)][int(tempPos.y() / COORDINATE_SCALE)]){
@@ -58,8 +62,8 @@ void Player::deployDots(){
     }
 
     // set the current point to correct state;
-    if(!graphArray[int((this->pos().x() + PLAYER_EDGE / 2) / COORDINATE_SCALE)][int((this->pos().y() + PLAYER_EDGE / 2) / COORDINATE_SCALE)]){
-        graphArray[int((this->pos().x() + PLAYER_EDGE / 2) / COORDINATE_SCALE)][int((this->pos().y() + PLAYER_EDGE / 2) / COORDINATE_SCALE)] = true;
+    if(!graphArray[int((this->pos().x()) / COORDINATE_SCALE)][int((this->pos().y()) / COORDINATE_SCALE)]){
+        graphArray[int((this->pos().x()) / COORDINATE_SCALE)][int((this->pos().y()) / COORDINATE_SCALE)] = true;
     }
 
     QColor color(Qt::gray);
@@ -67,20 +71,20 @@ void Player::deployDots(){
         color.setRed(Qt::red);
         vertices.append(tempVertex);
         tempVertex = new Vertex(this->scene,color);
-        this->tempVertex->addDots(QPointF(this->pos().x() + PLAYER_EDGE / 2, this->pos().y() + PLAYER_EDGE / 2));
+        this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
         flag = true;
     }else if(!putInToStackAmounts){ // means that the point is the end of the vertex;
-        this->tempVertex->addDots(QPointF(this->pos().x() + PLAYER_EDGE / 2, this->pos().y() + PLAYER_EDGE / 2));
+        this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
         vertices.append(tempVertex);
         tempVertex = new Vertex(this->scene,PlayerParms::DotColors[vertices.size() % PlayerParms::DotColors.size()]);
     }else{
         if(flag){
-            this->tempVertex->addDots(QPointF(this->pos().x() + PLAYER_EDGE / 2, this->pos().y() + PLAYER_EDGE / 2));
+            this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
             vertices.append(tempVertex);
             tempVertex = new Vertex(this->scene,PlayerParms::DotColors[vertices.size() % PlayerParms::DotColors.size()]);
             flag = false;
         }
-        this->tempVertex->addDots(QPointF(this->pos().x() + PLAYER_EDGE / 2, this->pos().y() + PLAYER_EDGE / 2));
+        this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
     }
 
 
@@ -88,7 +92,8 @@ void Player::deployDots(){
     if(!backTrackStack.size()){
         disconnect(this->timer,SIGNAL(timeout()),this,SLOT(deployDots()));
         vertices.append(tempVertex);
-
+        timer->start(100);
+        connect(timer, SIGNAL(timeout()),this,SLOT(move()));
         emit dotFinish();
         return;
     }
@@ -98,9 +103,9 @@ void Player::deployDots(){
             if(backTrackStack.isEmpty())
                 break;
             newPos = backTrackStack.last();
-            this->setPos(QPointF(newPos.x() - PLAYER_EDGE / 2, newPos.y() - PLAYER_EDGE / 2));
+            this->setPos(QPointF(newPos.x(), newPos.y()));
             backTrackStack.pop_back();
-        }while(graphArray[int((this->pos().x() + PLAYER_EDGE / 2) / COORDINATE_SCALE)][int((this->pos().y() + PLAYER_EDGE / 2) / COORDINATE_SCALE)]);
+        }while(graphArray[int((this->pos().x()) / COORDINATE_SCALE)][int((this->pos().y()) / COORDINATE_SCALE)]);
     }
 }
 
@@ -133,4 +138,49 @@ QPoint Player::tinyCoordinate(QPointF target){
 
 QPoint Player::BigCoordinate(QPoint c){
     return QPoint(c.x() * COORDINATE_SCALE, c.y() * COORDINATE_SCALE);
+}
+
+void Player::keyPressEvent(QKeyEvent *event){
+    if(event->key() == Qt::Key::Key_Up){
+        currentMovingVector.setX(0);
+        currentMovingVector.setY(-1);
+
+        qDebug()<<"up";
+    }else if(event->key() == Qt::Key::Key_Down){
+        currentMovingVector.setX(0);
+        currentMovingVector.setY(1);
+        qDebug()<<"Down";
+    }else if(event->key() == Qt::Key::Key_Left){
+        currentMovingVector.setX(-1);
+        currentMovingVector.setY(0);
+        qDebug()<<"Left";
+    }else if(event->key() == Qt::Key::Key_Right){
+        currentMovingVector.setX(1);
+        currentMovingVector.setY(0);
+        qDebug()<<"Right";
+    }
+    QPointF temp = this->pos() + currentMovingVector * COORDINATE_SCALE;
+    QList<QGraphicsItem *> items =  this->scene->items(temp);
+    QGraphicsItem * tempItem;
+    if(items.size()){
+        tempItem = items[0];
+        if(typeid(*tempItem) == typeid(Barrier)){
+            currentMovingVector = lastMovingVector;
+        }
+    }
+
+}
+
+void Player::move(){
+    QPointF temp = this->pos() + currentMovingVector * COORDINATE_SCALE;
+    QList<QGraphicsItem *> items =  this->scene->items(temp);
+    QGraphicsItem * tempItem;
+    if(items.size()){
+        tempItem = items[0];
+        if(typeid(*tempItem) == typeid(Barrier)){
+            currentMovingVector.setX(0);
+            currentMovingVector.setY(0);
+        }
+    }
+    setPos(pos() + currentMovingVector * COORDINATE_SCALE);
 }
