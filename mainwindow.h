@@ -19,6 +19,8 @@
 #include <QString>
 #include <QList>
 #include <QVector>
+
+#include "elf_base.h"
 #include "barrier.h"
 #include "debugnode.h"
 #include "vertex.h"

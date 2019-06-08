@@ -7,6 +7,7 @@
 #include <QPointF>
 #include <QVector>
 #include <QGraphicsScene>
+#include <map>
 #include "debugnode.h"
 
 class Path : public QObject , public QGraphicsRectItem
@@ -29,6 +30,45 @@ private:
 
 private:
      QPoint judgeMovingVector(QPoint startPos, QPoint targetPos, int(QPoint::*coordinate)()const, void(QPoint::*setCoordinate)(int),QPoint & movingVector);
+
+};
+
+class TempPath{
+private:
+    QVector<QPointF> steps;
+    QPointF startingPoint;
+    QPointF lastStartingPoint;
+    QVector<QPointF> children;
+public:
+    TempPath(QPointF start, QPointF last){
+        steps.push_back(start);
+        startingPoint = start;
+        lastStartingPoint = last;
+    }
+    TempPath(){}
+
+    void addStep(QPointF newPoint){
+        steps.push_back(newPoint);
+    }
+    QPointF Start(){
+        return startingPoint;
+    }
+
+    QPointF last(){
+        return lastStartingPoint;
+    }
+
+    QVector<QPointF> Steps(){
+        return steps;
+    }
+
+    QVector<QPointF> Children(){
+        return children;
+    }
+
+    void addChild(QPointF child){
+        children.push_back(child);
+    }
 
 };
 

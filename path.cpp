@@ -47,58 +47,57 @@ void Path::PathFinding(QPoint startPoint,QPoint target, int MaxStep){
         QPoint(0,-1)
     };
 
+
+//    std::map<QPointF, TempPath> partitionStep;
+    QVector<TempPath> partitionStep;
+    QVector<TempPath> tempPartitionStep;
+    QPointF tempNode;
+    QVector<QPointF> tempSteps;
+    QPointF p = startPoint;
+    int currentStep = 0;
     QVector<QPointF> nodes;
-    QVector<QPointF> forks;
-    QVector<int> consecutiveSteps;
-    int ableToGo = 0;
-    QPointF p;
-    nodes.push_back(this->pos());
-    forks.push_back(this->pos());
 
-    qDebug()<<nodes;
+    partitionStep.push_back(TempPath(p,p));
 
-    QPointF temp;
-    debugNode * dn;
-    int step = -1;
-    while (forks.size()) {
-        // pop up
-        p = nodes.last();
 
-        p /= COORDINATE_SCALE;
-        if(p == target){
-            break;
-        }
-        graph[int(p.x())][int(p.y())] = true;
-        dn = new debugNode(p.toPoint() * COORDINATE_SCALE);
-        scene->addItem(dn);
-        nodes.pop_back();
-        for(int i = 0; i < movingVectors.size(); ++i){
-            temp = p + movingVectors[i];
-            if(!graph[int(temp.x())][int(temp.y())]){
-                ++ableToGo;
-//                qDebug()<<temp<<"this step can go forward";
+    nodes.push_back(this->pos() / COORDINATE_SCALE );
+    while(currentStep < MaxStep){
+        // go a step;
 
-                nodes.push_back(temp * 30);
+        for(int i = 0; i < partitionStep.size(); ++i){
+            p = partitionStep[i].Steps().last();
+
+            if(p == target){
+                qDebug()<<"find the path";
+                return;
+            }
+            for(int i = 0; i < movingVectors.size(); ++i){
+                tempNode = movingVectors[i] + p;
+                if(!graph[int(tempNode.x())][int(tempNode.y())]){
+                     nodes.push_back(tempNode);
+                }
+            }
+
+            if(nodes.size() > 1){
+                // add the forks
+                for (int i = 0; i < nodes.size(); ++i) {
+                    tempPartitionStep.push_back(TempPath(nodes[i],p));
+                }
+                nodes.clear();
+            }/*else if(!nodes.size()){ // meet the dead street
+
+                partitionStep.erase(it);
+
+            }*/else if(nodes.size() == 1){ // only one node could go forward
+               partitionStep[i].addStep(nodes[0]);
             }
         }
-
-        if(ableToGo > 1){ // means that p is fork
-            // put in the fork
-            forks.push_back(p);
-
-            // record the consecutive step
-            consecutiveSteps.push_back(step);
-
-            //zeroing the step;
-            step = -1;
-
-        }else if(ableToGo == 1){
-            ++step;
-        }else{// means that meet the dead street;
-            // pop the last forks;
-
+        for (int i = 0; i < tempPartitionStep.size(); ++i) {
+            partitionStep.push_back(tempPartitionStep[i]);
         }
+
+        tempPartitionStep.clear();
+        ++ currentStep;
+        qDebug()<<"current step "<<currentStep;
     }
-
-
 }

@@ -141,6 +141,7 @@ QPoint Player::BigCoordinate(QPoint c){
 }
 
 void Player::keyPressEvent(QKeyEvent *event){
+    lastMovingVector = currentMovingVector;
     if(event->key() == Qt::Key::Key_Up){
         currentMovingVector.setX(0);
         currentMovingVector.setY(-1);

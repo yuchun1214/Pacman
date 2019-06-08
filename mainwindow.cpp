@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     scene = new QGraphicsScene(view);
     view->setScene(scene);
 
+
     this->view->setFixedSize(900,1000);
     this->view->setSceneRect(50,250, 780,450);
 
@@ -28,11 +29,12 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
             }
         }
     }
-    this->path = new Path(QPoint(1,1),scene,this->MazeArray());
+
 
     player = new Player(QPoint(1,10),scene,this->path);
     player->setFlag(QGraphicsItem::ItemIsFocusable);
     player->setFocus();
+
 
 #ifdef DEBUG
     showDebugCoordinate();
@@ -170,13 +172,16 @@ void MainWindow::testButton(){
 //        ++i;
 //    }
 //    this->player->moveTo(QPoint(1,1));
-    this->path->PathFinding(this->player->pos().toPoint(),QPoint(25,19));
+    this->path->PathFinding(this->player->pos().toPoint() / COORDINATE_SCALE,QPoint(25,19));
 
 }
 
 void MainWindow::checkVertex(){
     this->vertices = player->Vertices();
     qDebug()<<"vertices.size = "<<this->vertices.size();
+    elf_base * elf = new elf1(QPoint(2,1) * COORDINATE_SCALE,scene);
+    scene->addItem(elf);
+    this->path = new Path(QPoint(1,1),scene,this->MazeArray());
 }
 
 QVector<QVector<bool> > MainWindow::MazeArray(){

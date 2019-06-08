@@ -28,6 +28,7 @@ SOURCES += \
         barrier.cpp \
         debugnode.cpp \
         dot.cpp \
+        elf_base.cpp \
         gameobject.cpp \
         main.cpp \
         mainwindow.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
         debugnode.h \
         def.h \
         dot.h \
+        elf_base.h \
         gameobject.h \
         mainwindow.h \
         path.h \
