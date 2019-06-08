@@ -14,6 +14,7 @@ private:
     QPoint _pos;
 public:
     debugNode(qreal x, qreal y);
+    debugNode(QPoint);
 
     // QGraphicsItem interface
 protected:

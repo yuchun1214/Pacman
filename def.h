@@ -13,11 +13,11 @@
 #define DOT_SIZE 8
 #define DEPLOY_DOTS false
 
-#ifdef DEBUG
-#define BARRIER_CHECK_NUM 4
-#else
+//#ifdef DEBUG
+//#define BARRIER_CHECK_NUM 4
+//#else
 #define BARRIER_CHECK_NUM 1
-#endif
+//#endif
 
 
 #endif // DEF_H

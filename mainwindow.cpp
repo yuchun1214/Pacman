@@ -11,15 +11,42 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
 
     this->view->setFixedSize(900,1000);
     this->view->setSceneRect(50,250, 780,450);
-    this->path = new Path();
-    player = new Player(QPoint(1,10),scene,this->path);
-
-#ifdef DEBUG
-    showDebugCoordinate();
-#endif
 
     this->loadMazeConfig(QString(":/barrier/config/maze.json"));
     this->mirrorTheGraph(Ui::mirrorFunctionX_13,this->barriers);
+    for(int i = 0; i < MAZE_WIDTH + 1; ++i){
+        QVector<bool> temp;
+        for(int j = 0; j < MAZE_HEIGHT + 1; ++j){
+            temp.push_back(false);
+        }
+        maze.push_back(temp);
+    }
+    for(int i = 0; i < MAZE_WIDTH + 1; ++i){
+        for(int j = 0; j < MAZE_HEIGHT + 1; ++j){
+            if(this->scene->items(QPoint(i * COORDINATE_SCALE,j * COORDINATE_SCALE)).size() > 0){
+                maze[i][j] = true;
+            }
+        }
+    }
+    this->path = new Path(QPoint(1,1),scene,this->MazeArray());
+
+    player = new Player(QPoint(1,10),scene,this->path);
+
+#ifdef DEBUG
+//    showDebugCoordinate();
+//    int maze[MAZE_WIDTH + 1][MAZE_HEIGHT + 1];
+
+
+    debugNode * node;
+    for(int i = 0; i < MAZE_WIDTH + 1; ++i){
+        for(int j = 0; j < MAZE_HEIGHT + 1; ++j){
+            if(!maze[i][j]){
+                node = new debugNode(i * COORDINATE_SCALE,j * COORDINATE_SCALE);
+                scene->addItem(node);
+            }
+        }
+    }
+#endif
     connect(ui->resetButton,SIGNAL(clicked(bool)),this,SLOT(resetBarriers()));
     connect(ui->load,SIGNAL(clicked(bool)),this,SLOT(loadBarriers()));
     connect(ui->debugging,SIGNAL(clicked(bool)),this,SLOT(debuggingButton()));
@@ -151,12 +178,18 @@ void MainWindow::testButton(){
 //        vertices[i]->hide();
 //        ++i;
 //    }
-    this->player->moveTo(QPoint(1,1));
+//    this->player->moveTo(QPoint(1,1));
+    this->path->PathFinding(QPoint(3,1));
+
 }
 
 void MainWindow::checkVertex(){
     this->vertices = player->Vertices();
     qDebug()<<"vertices.size = "<<this->vertices.size();
+}
+
+QVector<QVector<bool> > MainWindow::MazeArray(){
+    return maze;
 }
 
 Barrier * Ui::mirrorFunctionX_13(Barrier * barrier){

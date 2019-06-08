@@ -35,6 +35,7 @@ class MainWindow : public QMainWindow{
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    QVector<QVector<bool> > MazeArray();
     ~MainWindow();
 
 private:
@@ -47,6 +48,7 @@ private:
     QVector<debugNode *> debuggingNodes;
     QVector<QGraphicsLineItem *> debugginglines;
     QVector<Vertex *> vertices;
+    QVector<QVector<bool> > maze;
     QTimer * timer;
 
     void showDebugCoordinate();

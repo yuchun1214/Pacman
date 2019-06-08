@@ -9,6 +9,13 @@ debugNode::debugNode(qreal x, qreal y){
     this->setBrush(br);
 }
 
+debugNode::debugNode(QPoint pos){
+    QBrush br(Qt::red);
+    this->setPos(pos);
+    this->setRect(-DEBUGNODE_SIZE / 2, -DEBUGNODE_SIZE / 2,DEBUGNODE_SIZE, DEBUGNODE_SIZE);
+    this->setBrush(br);
+}
+
 void debugNode::mousePressEvent(QGraphicsSceneMouseEvent *event){
 
     qDebug()<<this->_pos;
