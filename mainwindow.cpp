@@ -39,23 +39,22 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     dm = new DotManager(scene,maze,dashBoard);
     dm->deployTheDots(QPoint(1,1));
     dm->deleteTheDot(QPoint(25,19));
-
+    QVector<QPointF> nodes = dm->Nodes();
     player = new Player(QPoint(25,19),scene,dm);
     player->setFlag(QGraphicsItem::ItemIsFocusable);
     player->setFocus();
 
-    elf1 * elf = new elf1(QPoint(330,270),scene,player);
+    elf1 * elf = new elf1(QPoint(330,270),scene,player,nodes);
     scene->addItem(elf);
     elves.push_back(elf);
-    elf2 * elf_2 = new elf2(QPoint(360,270),scene,player);
+    elf2 * elf_2 = new elf2(QPoint(360,270),scene,player,nodes);
     scene->addItem(elf_2);
-    elf4 * elf_4 = new elf4(QPoint(390,270),scene,player);
+    elf4 * elf_4 = new elf4(QPoint(390,270),scene,player,nodes);
     scene->addItem(elf_4);
-    elf3 * elf_3 = new elf3(QPoint(360,300),scene,player);
+    elf3 * elf_3 = new elf3(QPoint(360,300),scene,player,nodes);
     scene->addItem(elf_3);
     elves.push_back(elf_3);
     elves.push_back(elf_2);
-//    elves.push_back(elf_3);
     elves.push_back(elf_4);
 
 #ifdef DEBUG

@@ -43,6 +43,7 @@ public:
     void deleteTheDot(QPoint p);
     void deleteTheDot(int x,int y);
     QVector<QVector<Dot*> >Dots();
+    QVector<QPointF>Nodes();
 signals:
     void eatDot();
     void eatPowerPellet();
@@ -53,6 +54,7 @@ private:
     QGraphicsScene * scene;
     QVector<QVector<bool> > maze;
     QVector<QVector<Dot*> > dots;
+    QVector<QPointF> nodes;
 private:
 };
 

@@ -82,6 +82,7 @@ void DotManager::deployTheDots(QPoint startPoint){
             dots[currentNode.x()][currentNode.y()] = dot;
             scene->addItem(dot);
             graphArray[currentNode.x()][currentNode.y()] = true;
+            this->nodes.push_back(currentNode);
             ++step;
         }
 
@@ -125,6 +126,10 @@ void DotManager::eatenPowerPellet(QPoint dotPos){
     qDebug()<<"slot powerPellet "<<dotPos;
     deleteTheDot(dotPos);
     emit eatPowerPellet();
+}
+
+QVector<QPointF> DotManager::Nodes(){
+    return nodes;
 }
 
 QVector<QVector<Dot*> > DotManager::Dots(){

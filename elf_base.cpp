@@ -1,8 +1,9 @@
 #include "elf_base.h"
 
 
-elf_base::elf_base(QPoint position,QGraphicsScene * scene)
+elf_base::elf_base(QPoint position,QGraphicsScene * scene,QVector<QPointF> nodes)
 {
+    this->nodes = nodes;
     this->setPos(position);
     this->setRect(- ELF_SIZE / 2,- ELF_SIZE / 2,ELF_SIZE,ELF_SIZE);
     QBrush br;
@@ -18,6 +19,10 @@ void elf_base::move(){
 
 void elf_base::beGhost(){
     qDebug()<<"be ghost";
+}
+
+void elf_base::isGhostMove(){
+
 }
 
 QPointF elf_base::moveTo(QPointF target){
@@ -145,7 +150,7 @@ bool elf_base::checkIfItHasBarrier(QPointF position){
     return true;
 }
 
-elf1::elf1(QPoint startPos,QGraphicsScene * scene,Player * player,QObject * parent) : QObject (parent), elf_base(startPos,scene){
+elf1::elf1(QPoint startPos,QGraphicsScene * scene,Player * player,QVector<QPointF> nodes,QObject * parent) : QObject (parent), elf_base(startPos,scene,nodes){
 
     this->scene = scene;
     timer = new QTimer();
@@ -169,7 +174,7 @@ void elf1::test(){
 }
 
 
-elf2::elf2(QPoint startPos,QGraphicsScene * scene,Player * player,QObject * parent) : QObject (parent), elf_base(startPos,scene){
+elf2::elf2(QPoint startPos,QGraphicsScene * scene,Player * player,QVector<QPointF> nodes,QObject * parent) : QObject (parent), elf_base(startPos,scene,nodes){
     this->scene = scene;
     timer = new QTimer();
     timer->start(100);
@@ -183,7 +188,7 @@ void elf2::move(){
     setPos(this->pos() + movingVector);
 }
 
-elf3::elf3(QPoint startPos,QGraphicsScene * scene,Player * player,QObject * parent) : QObject (parent), elf_base(startPos,scene){
+elf3::elf3(QPoint startPos,QGraphicsScene * scene,Player * player,QVector<QPointF> nodes,QObject * parent) : QObject (parent), elf_base(startPos,scene,nodes){
     this->scene = scene;
     timer = new QTimer();
     timer->start(100);
@@ -197,7 +202,7 @@ void elf3::move(){
     setPos(this->pos() + movingVector);
 }
 
-elf4::elf4(QPoint startPos,QGraphicsScene * scene,Player * player,QObject * parent) : QObject (parent), elf_base(startPos,scene){
+elf4::elf4(QPoint startPos,QGraphicsScene * scene,Player * player,QVector<QPointF> nodes,QObject * parent) : QObject (parent), elf_base(startPos,scene,nodes){
     this->scene = scene;
     timer = new QTimer();
     timer->start(100);
