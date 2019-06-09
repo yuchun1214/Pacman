@@ -47,15 +47,12 @@ void Player::deployDots(){
 
     QPointF tempPos;
     int putInToStackAmounts = 0;
-//    graphArray[int((this->pos().x() + PLAYER_EDGE / 2) / COORDINATE_SCALE)][int((this->pos().y() + PLAYER_EDGE / 2) / COORDINATE_SCALE)] = true;
 
     for(int i = 0, size = movingVectors.size(); i < size; ++i){
         tempPos = QPointF(this->pos().x() + movingVectors[i].x(), this->pos().y() + movingVectors[i].y());
-//        qDebug()<<"tempPos"<<tempPos;
         if(scene->items(tempPos).size() < BARRIER_CHECK_NUM){
             if(!graphArray[int(tempPos.x() / COORDINATE_SCALE)][int(tempPos.y() / COORDINATE_SCALE)]){
                 ++putInToStackAmounts;
-//                qDebug()<<"getInToStack"<<tempPos;
                 backTrackStack.push_back(tempPos);
             }
         }

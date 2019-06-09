@@ -10,6 +10,9 @@
 #include <QColor>
 #include <QGraphicsRectItem>
 
+
+
+
 class Dot : public QObject,public QGraphicsRectItem
 {
     Q_OBJECT
@@ -19,6 +22,7 @@ public:
 signals:
 
 public slots:
+
 };
 
 #endif // DOT_H

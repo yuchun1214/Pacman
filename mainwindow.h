@@ -26,6 +26,7 @@
 #include "vertex.h"
 #include "path.h"
 #include "player.h"
+#include "dashboard.h"
 
 
 namespace Ui {
@@ -52,6 +53,7 @@ private:
     QVector<Vertex *> vertices;
     QVector<QVector<bool> > maze;
     QTimer * timer;
+    DashBoard * dashBoard;
 
     void showDebugCoordinate();
     void loadMazeConfig(QString filename);

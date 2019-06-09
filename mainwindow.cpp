@@ -8,7 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     view = ui->view;
     scene = new QGraphicsScene(view);
     view->setScene(scene);
-
+    this->dashBoard = new DashBoard();
+    this->dashBoard->setPlainText(QString("0"));
 
     this->view->setFixedSize(900,1000);
     this->view->setSceneRect(50,250, 780,450);

@@ -26,6 +26,7 @@ CONFIG += c++11
 
 SOURCES += \
         barrier.cpp \
+        dashboard.cpp \
         debugnode.cpp \
         dot.cpp \
         elf_base.cpp \
@@ -38,6 +39,7 @@ SOURCES += \
 
 HEADERS += \
         barrier.h \
+        dashboard.h \
         debugnode.h \
         def.h \
         dot.h \
