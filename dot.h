@@ -29,7 +29,9 @@ public slots:
 };
 
 class PowerPellet : public Dot{
-
+public:
+    explicit PowerPellet();
+    explicit PowerPellet(QPointF coordinate);
 };
 
 class DotManager : public QObject
@@ -43,8 +45,10 @@ public:
     QVector<QVector<Dot*> >Dots();
 signals:
     void eatDot();
+    void eatPowerPellet();
 public slots:
     void eatenDot(QPoint);
+    void eatenPowerPellet(QPoint);
 private:
     QGraphicsScene * scene;
     QVector<QVector<bool> > maze;

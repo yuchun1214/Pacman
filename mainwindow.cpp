@@ -33,18 +33,31 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     }
 
 
-    elf = new elf1(QPoint(30,30),scene);
-    scene->addItem(elf);
+
+
 
     dm = new DotManager(scene,maze,dashBoard);
     dm->deployTheDots(QPoint(1,1));
-    dm->deleteTheDot(QPoint(1,10));
-    dm->deleteTheDot(QPoint(1,1));
+    dm->deleteTheDot(QPoint(25,19));
 
-
-    player = new Player(QPoint(1,10),scene,dm);
+    player = new Player(QPoint(25,19),scene,dm);
     player->setFlag(QGraphicsItem::ItemIsFocusable);
     player->setFocus();
+
+    elf1 * elf = new elf1(QPoint(330,270),scene,player);
+    scene->addItem(elf);
+    elves.push_back(elf);
+    elf2 * elf_2 = new elf2(QPoint(360,270),scene,player);
+    scene->addItem(elf_2);
+    elf4 * elf_4 = new elf4(QPoint(390,270),scene,player);
+    scene->addItem(elf_4);
+    elf3 * elf_3 = new elf3(QPoint(360,300),scene,player);
+    scene->addItem(elf_3);
+    elves.push_back(elf_3);
+    elves.push_back(elf_2);
+//    elves.push_back(elf_3);
+    elves.push_back(elf_4);
+
 #ifdef DEBUG
     showDebugCoordinate();
 
@@ -54,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->debugging,SIGNAL(clicked(bool)),this,SLOT(debuggingButton()));
     connect(ui->nmode, SIGNAL(clicked(bool)), this, SLOT(nmodeButton()));
     connect(ui->test, SIGNAL(clicked(bool)), this, SLOT(testButton()));
+    connect(dm,SIGNAL(eatPowerPellet()),this,SLOT(powerPelletsAreEaten()));
 }
 
 void MainWindow::resetBarriers(){
@@ -117,7 +131,7 @@ void MainWindow::loadMazeConfig(QString filename){
     for(int i = 0, size = keys.size(); i < size ;i++){
 //        qDebug()<<keys[i];
         parts = config[keys[i]].toArray();
-//        qDebug()<<parts;
+
         for(int j = 0,psize = parts.size(); j < psize; j++){
             component = parts[j].toArray();
             for(int k = 0, csize = component.size(); k < csize; k++){
@@ -175,14 +189,14 @@ void MainWindow::testButton(){
 
 //    qDebug()<< dm->Dots()[8][10]->pos();
 //    this->path->PathFinding(this->player->pos().toPoint() / COORDINATE_SCALE,QPoint(25,19));
-    elf->test();
+//    elf->test();
 }
 
 void MainWindow::checkVertex(){
 //    this->vertices = player->Vertices();
     qDebug()<<"vertices.size = "<<this->vertices.size();
-    elf_base * elf = new elf1(QPoint(2,1) * COORDINATE_SCALE,scene);
-    scene->addItem(elf);
+//    elf_base * elf = new elf1(QPoint(2,1) * COORDINATE_SCALE,scene);
+//    scene->addItem(elf);
 //    this->path = new Path(QPoint(1,1),scene,this->MazeArray());
 }
 
@@ -220,6 +234,12 @@ void MainWindow::mirrorTheGraph(Barrier * (*mirrorfunction)(Barrier *),QVector<B
             this->barriers.push_back(b);
             scene->addItem(b);
         }
+    }
+}
+
+void MainWindow::powerPelletsAreEaten(){
+    for(int i = 0; i < elves.size();++i){
+        elves[i]->beGhost();
     }
 }
 

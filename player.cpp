@@ -15,6 +15,7 @@ Player::Player(QPoint startPoint,QGraphicsScene * scene, DotManager * dm, QObjec
     currentMovingVector(0,0),
     lastMovingVector(0,0)
 {
+
     this->timer = new QTimer();
     this->scene = scene;
     timer->start(100);
@@ -35,8 +36,14 @@ Player::Player(QPoint startPoint,QGraphicsScene * scene, DotManager * dm, QObjec
 
 //    tempVertex = new Vertex(scene);
     this->flag = false;
+    QBrush br;
+    br.setStyle(Qt::SolidPattern);
+    br.setColor(Qt::yellow);
+    this->setBrush(br);
+
     connect(timer, SIGNAL(timeout()),this,SLOT(move()));
     connect(this,SIGNAL(eatADot(QPoint)),dm,SLOT(eatenDot(QPoint)));
+    connect(this,SIGNAL(eatPowerPellet(QPoint)),dm,SLOT(eatenPowerPellet(QPoint)));
 }
 
 //void Player::deployDots(){
@@ -156,7 +163,10 @@ void Player::move(){
     for(int i = 0, size = colliding_items.size(); i < size; ++i){
         if(typeid (*(colliding_items[i])) == typeid (Dot)){
             emit eatADot(this->pos().toPoint() / COORDINATE_SCALE);
-            qDebug()<<"collid with dot";
+//            qDebug()<<"collid with dot";
+        }else if(typeid (*(colliding_items[i])) == typeid (PowerPellet)){
+            emit eatPowerPellet(this->pos().toPoint() / COORDINATE_SCALE);
+//            qDebug()<<"colide with powerPellet";
         }
     }
     QPointF temp = this->pos() + currentMovingVector * COORDINATE_SCALE;

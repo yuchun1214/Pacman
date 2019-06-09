@@ -13,6 +13,7 @@
 #define DOT_SIZE 8
 #define ELF_SIZE 16
 #define DEPLOY_DOTS false
+#define POWERPELLET_SIZE 14
 
 #ifdef DEBUG
 #define BARRIER_CHECK_NUM 4

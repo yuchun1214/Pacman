@@ -16,6 +16,10 @@ void elf_base::move(){
 //    this->setPos(this->pos() + this->moveTo(target) * COORDINATE_SCALE);
 }
 
+void elf_base::beGhost(){
+    qDebug()<<"be ghost";
+}
+
 QPointF elf_base::moveTo(QPointF target){
 //    target = target / COORDINATE_SCALE;
     QPointF pathVector = target - this->pos();
@@ -141,21 +145,68 @@ bool elf_base::checkIfItHasBarrier(QPointF position){
     return true;
 }
 
-elf1::elf1(QPoint startPos,QGraphicsScene * scene,QObject * parent) : QObject (parent), elf_base(startPos,scene){
+elf1::elf1(QPoint startPos,QGraphicsScene * scene,Player * player,QObject * parent) : QObject (parent), elf_base(startPos,scene){
+
     this->scene = scene;
     timer = new QTimer();
     timer->start(100);
-
+    this->player = player;
+    QBrush br;
+    br.setStyle(Qt::SolidPattern);
+    br.setColor(Qt::red);
+    this->setBrush(br);
+//    connect(timer,SIGNAL(timeout()),this,SLOT(move()));
 }
 
 void elf1::move(){
-    qDebug()<<"move";
-    QPointF movingVector = elf_base::moveTo(QPointF(270,510))* COORDINATE_SCALE;
-    qDebug()<<"movingVector = "<<movingVector;
+    QPointF movingVector = elf_base::moveTo(player->pos())* COORDINATE_SCALE;
     setPos(this->pos() + movingVector);
 }
 
 void elf1::test(){
     QPointF t;
     connect(timer,SIGNAL(timeout()),this,SLOT(move()));
+}
+
+
+elf2::elf2(QPoint startPos,QGraphicsScene * scene,Player * player,QObject * parent) : QObject (parent), elf_base(startPos,scene){
+    this->scene = scene;
+    timer = new QTimer();
+    timer->start(100);
+    this->player = player;
+}
+
+void elf2::move(){
+    qDebug()<<"move";
+    QPointF movingVector = elf_base::moveTo(player->pos())* COORDINATE_SCALE;
+    qDebug()<<"movingVector = "<<movingVector;
+    setPos(this->pos() + movingVector);
+}
+
+elf3::elf3(QPoint startPos,QGraphicsScene * scene,Player * player,QObject * parent) : QObject (parent), elf_base(startPos,scene){
+    this->scene = scene;
+    timer = new QTimer();
+    timer->start(100);
+    this->player = player;
+}
+
+void elf3::move(){
+    qDebug()<<"move";
+    QPointF movingVector = elf_base::moveTo(player->pos())* COORDINATE_SCALE;
+    qDebug()<<"movingVector = "<<movingVector;
+    setPos(this->pos() + movingVector);
+}
+
+elf4::elf4(QPoint startPos,QGraphicsScene * scene,Player * player,QObject * parent) : QObject (parent), elf_base(startPos,scene){
+    this->scene = scene;
+    timer = new QTimer();
+    timer->start(100);
+    this->player = player;
+}
+
+void elf4::move(){
+    qDebug()<<"move";
+    QPointF movingVector = elf_base::moveTo(player->pos())* COORDINATE_SCALE;
+    qDebug()<<"movingVector = "<<movingVector;
+    setPos(this->pos() + movingVector);
 }

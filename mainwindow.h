@@ -53,9 +53,10 @@ private:
     QVector<Vertex *> vertices;
     QVector<QVector<bool> > maze;
     QTimer * timer;
-    elf1 * elf;
+//    elf1 * elf;
     DashBoard * dashBoard;
     DotManager * dm;
+    QVector<elf_base *>elves;
 
     void showDebugCoordinate();
     void loadMazeConfig(QString filename);
@@ -69,7 +70,6 @@ private:
     template<class T>
     void itemsHide(T & container);
 
-
     void mirrorTheGraph(Barrier * (*)(Barrier *),QVector<Barrier *> barriers);
 
 public slots:
@@ -79,7 +79,7 @@ public slots:
     void nmodeButton();
     void testButton();
     void checkVertex();
-
+    void powerPelletsAreEaten();
 
 
 };

@@ -34,6 +34,7 @@ public:
 signals:
     void dotFinish();
     void eatADot(QPoint);
+    void eatPowerPellet(QPoint);
 public slots:
 
 //    void deployDots();

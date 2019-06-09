@@ -7,7 +7,7 @@ Dot::Dot()
 
 Dot::Dot(QPointF coordinate,QColor color) : QGraphicsRectItem()
 {
-    QPen pen;
+
     QBrush brush;
     brush.setColor(color);
     brush.setStyle(Qt::SolidPattern);
@@ -16,7 +16,20 @@ Dot::Dot(QPointF coordinate,QColor color) : QGraphicsRectItem()
     this->setRect(0 - DOT_SIZE / 2,0 - DOT_SIZE / 2,DOT_SIZE,DOT_SIZE);
 }
 
+PowerPellet::PowerPellet(){
 
+}
+
+PowerPellet::PowerPellet(QPointF coordinate){
+    this->setPos(coordinate);
+    QBrush brush;
+    brush.setColor(Qt::black);
+    brush.setStyle(Qt::SolidPattern);
+    this->setBrush(brush);
+    this->setRect(0 - POWERPELLET_SIZE/ 2,0 - POWERPELLET_SIZE / 2,POWERPELLET_SIZE, POWERPELLET_SIZE);
+
+//    this->setPos(coordinate);
+}
 
 
 DotManager::DotManager(QGraphicsScene * scene,QVector<QVector<bool> > maze,DashBoard * dashBoard,QObject * parent) : QObject (parent){
@@ -44,6 +57,14 @@ void DotManager::deployTheDots(QPoint startPoint){
         QPoint(0,1),
         QPoint(0,-1)
     };
+
+    QVector<QPoint> powerPelletCoordinate = {
+        QPoint(25,1),
+        QPoint(7,17),
+        QPoint(21,15),
+        QPoint(1,1)
+    };
+
     QVector<QPoint> steps;
     QPoint temp;
     QPoint currentNode;
@@ -73,11 +94,19 @@ void DotManager::deployTheDots(QPoint startPoint){
         }
 
     }
+
+    for (int i = 0, size = powerPelletCoordinate.size(); i < size; ++i) {
+        deleteTheDot(powerPelletCoordinate[i]);
+        PowerPellet * p = new PowerPellet(powerPelletCoordinate[i] * COORDINATE_SCALE);
+        dots[powerPelletCoordinate[i].x()][powerPelletCoordinate[i].y()] = p;
+        scene->addItem(p);
+    }
     qDebug()<<"step = "<<step;
+
 }
 
 void DotManager::eatenDot(QPoint dotPos){
-    qDebug()<<"slot eatenDot "<<dotPos;
+//    qDebug()<<"slot eatenDot "<<dotPos;
     deleteTheDot(dotPos);
     emit eatDot();
 }
@@ -90,6 +119,12 @@ void DotManager::deleteTheDot(QPoint p){
 void DotManager::deleteTheDot(int x, int y){
     delete dots[x][y];
 //    dots[x][y] = nullptr;
+}
+
+void DotManager::eatenPowerPellet(QPoint dotPos){
+    qDebug()<<"slot powerPellet "<<dotPos;
+    deleteTheDot(dotPos);
+    emit eatPowerPellet();
 }
 
 QVector<QVector<Dot*> > DotManager::Dots(){
