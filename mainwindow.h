@@ -53,7 +53,9 @@ private:
     QVector<Vertex *> vertices;
     QVector<QVector<bool> > maze;
     QTimer * timer;
+    elf1 * elf;
     DashBoard * dashBoard;
+    DotManager * dm;
 
     void showDebugCoordinate();
     void loadMazeConfig(QString filename);

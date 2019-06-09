@@ -5,7 +5,7 @@ Player::Player(QObject *parent) : QObject(parent)
 
 }
 
-Player::Player(QPoint startPoint,QGraphicsScene * scene,Path * path, QObject * parent):
+Player::Player(QPoint startPoint,QGraphicsScene * scene, DotManager * dm, QObject * parent):
     QObject (parent),
     QGraphicsRectItem (),
     movingVectorPX(COORDINATE_SCALE, 0),
@@ -17,12 +17,7 @@ Player::Player(QPoint startPoint,QGraphicsScene * scene,Path * path, QObject * p
 {
     this->timer = new QTimer();
     this->scene = scene;
-    timer->start(10);
-    if(DEPLOY_DOTS){
-        connect(timer, SIGNAL(timeout()),this,SLOT(deployDots()));
-    }
-//    timer = new QTimer();
-
+    timer->start(100);
 
     this->setPos(startPoint * COORDINATE_SCALE);
     this->setRect(- PLAYER_EDGE / 2 , - PLAYER_EDGE / 2 , PLAYER_EDGE, PLAYER_EDGE);
@@ -38,92 +33,76 @@ Player::Player(QPoint startPoint,QGraphicsScene * scene,Path * path, QObject * p
     movingVectors.push_back(movingVectorNY);
 
 
-    tempVertex = new Vertex(scene);
+//    tempVertex = new Vertex(scene);
     this->flag = false;
-    this->path = path;
+    connect(timer, SIGNAL(timeout()),this,SLOT(move()));
+    connect(this,SIGNAL(eatADot(QPoint)),dm,SLOT(eatenDot(QPoint)));
 }
 
-void Player::deployDots(){
+//void Player::deployDots(){
 
-    QPointF tempPos;
-    int putInToStackAmounts = 0;
+//    QPointF tempPos;
+//    int putInToStackAmounts = 0;
 
-    for(int i = 0, size = movingVectors.size(); i < size; ++i){
-        tempPos = QPointF(this->pos().x() + movingVectors[i].x(), this->pos().y() + movingVectors[i].y());
-        if(scene->items(tempPos).size() < BARRIER_CHECK_NUM){
-            if(!graphArray[int(tempPos.x() / COORDINATE_SCALE)][int(tempPos.y() / COORDINATE_SCALE)]){
-                ++putInToStackAmounts;
-                backTrackStack.push_back(tempPos);
-            }
-        }
-    }
+//    for(int i = 0, size = movingVectors.size(); i < size; ++i){
+//        tempPos = QPointF(this->pos().x() + movingVectors[i].x(), this->pos().y() + movingVectors[i].y());
+//        if(scene->items(tempPos).size() < BARRIER_CHECK_NUM){
+//            if(!graphArray[int(tempPos.x() / COORDINATE_SCALE)][int(tempPos.y() / COORDINATE_SCALE)]){
+//                ++putInToStackAmounts;
+//                backTrackStack.push_back(tempPos);
+//            }
+//        }
+//    }
 
-    // set the current point to correct state;
-    if(!graphArray[int((this->pos().x()) / COORDINATE_SCALE)][int((this->pos().y()) / COORDINATE_SCALE)]){
-        graphArray[int((this->pos().x()) / COORDINATE_SCALE)][int((this->pos().y()) / COORDINATE_SCALE)] = true;
-    }
+//    // set the current point to correct state;
+//    if(!graphArray[int((this->pos().x()) / COORDINATE_SCALE)][int((this->pos().y()) / COORDINATE_SCALE)]){
+//        graphArray[int((this->pos().x()) / COORDINATE_SCALE)][int((this->pos().y()) / COORDINATE_SCALE)] = true;
+//    }
 
-    QColor color(Qt::gray);
-    if(putInToStackAmounts > 1){
-        color.setRed(Qt::red);
-        vertices.append(tempVertex);
-        tempVertex = new Vertex(this->scene,color);
-        this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
-        flag = true;
-    }else if(!putInToStackAmounts){ // means that the point is the end of the vertex;
-        this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
-        vertices.append(tempVertex);
-        tempVertex = new Vertex(this->scene,PlayerParms::DotColors[vertices.size() % PlayerParms::DotColors.size()]);
-    }else{
-        if(flag){
-            this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
-            vertices.append(tempVertex);
-            tempVertex = new Vertex(this->scene,PlayerParms::DotColors[vertices.size() % PlayerParms::DotColors.size()]);
-            flag = false;
-        }
-        this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
-    }
+//    QColor color(Qt::gray);
+//    if(putInToStackAmounts > 1){
+//        color.setRed(Qt::red);
+//        vertices.append(tempVertex);
+//        tempVertex = new Vertex(this->scene,color);
+//        this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
+//        flag = true;
+//    }else if(!putInToStackAmounts){ // means that the point is the end of the vertex;
+//        this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
+//        vertices.append(tempVertex);
+//        tempVertex = new Vertex(this->scene,PlayerParms::DotColors[vertices.size() % PlayerParms::DotColors.size()]);
+//    }else{
+//        if(flag){
+//            this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
+//            vertices.append(tempVertex);
+//            tempVertex = new Vertex(this->scene,PlayerParms::DotColors[vertices.size() % PlayerParms::DotColors.size()]);
+//            flag = false;
+//        }
+//        this->tempVertex->addDots(QPointF(this->pos().x(), this->pos().y()));
+//    }
 
 
-    // pop up
-    if(!backTrackStack.size()){
-        disconnect(this->timer,SIGNAL(timeout()),this,SLOT(deployDots()));
-        vertices.append(tempVertex);
-        timer->start(100);
-        connect(timer, SIGNAL(timeout()),this,SLOT(move()));
-        emit dotFinish();
-        return;
-    }
-    else{
-        QPointF newPos;
-        do{
-            if(backTrackStack.isEmpty())
-                break;
-            newPos = backTrackStack.last();
-            this->setPos(QPointF(newPos.x(), newPos.y()));
-            backTrackStack.pop_back();
-        }while(graphArray[int((this->pos().x()) / COORDINATE_SCALE)][int((this->pos().y()) / COORDINATE_SCALE)]);
-    }
-}
+//    // pop up
+//    if(!backTrackStack.size()){
+//        disconnect(this->timer,SIGNAL(timeout()),this,SLOT(deployDots()));
+//        vertices.append(tempVertex);
+//        timer->start(100);
+//        connect(timer, SIGNAL(timeout()),this,SLOT(move()));
+//        emit dotFinish();
+//        return;
+//    }
+//    else{
+//        QPointF newPos;
+//        do{
+//            if(backTrackStack.isEmpty())
+//                break;
+//            newPos = backTrackStack.last();
+//            this->setPos(QPointF(newPos.x(), newPos.y()));
+//            backTrackStack.pop_back();
+//        }while(graphArray[int((this->pos().x()) / COORDINATE_SCALE)][int((this->pos().y()) / COORDINATE_SCALE)]);
+//    }
+//}
 
-QVector<Vertex *> Player::Vertices(){
-    return vertices;
-}
 
-void Player::moveTo(QPoint target){
-
-    int maxTimes = 9;
-    int i = 0;
-    while (this->tinyCoordinate(this->pos()) != target && ++i < maxTimes) {
-        QPoint movingVector;
-        movingVector = path->giveMePath(this->tinyCoordinate(this->pos()),this->tinyCoordinate(target));
-        qDebug()<<"movingVector = "<<movingVector;
-        movingVector = this->BigCoordinate(movingVector);
-        movingVector += QPoint(int(this->pos().x()),int(this->pos().y()));
-        setPos(movingVector);
-    }
-
-}
 
 QPoint Player::tinyCoordinate(QPoint target){
     return QPoint(target.x()/COORDINATE_SCALE, target.y() / COORDINATE_SCALE);
@@ -169,7 +148,17 @@ void Player::keyPressEvent(QKeyEvent *event){
 
 }
 
+
+
 void Player::move(){
+
+    QList<QGraphicsItem *> colliding_items = collidingItems();
+    for(int i = 0, size = colliding_items.size(); i < size; ++i){
+        if(typeid (*(colliding_items[i])) == typeid (Dot)){
+            emit eatADot(this->pos().toPoint() / COORDINATE_SCALE);
+            qDebug()<<"collid with dot";
+        }
+    }
     QPointF temp = this->pos() + currentMovingVector * COORDINATE_SCALE;
     QList<QGraphicsItem *> items =  this->scene->items(temp);
     QGraphicsItem * tempItem;

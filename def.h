@@ -12,7 +12,7 @@
 #define PLAYER_EDGE 16
 #define DOT_SIZE 8
 #define ELF_SIZE 16
-#define DEPLOY_DOTS true
+#define DEPLOY_DOTS false
 
 #ifdef DEBUG
 #define BARRIER_CHECK_NUM 4

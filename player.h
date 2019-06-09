@@ -11,11 +11,12 @@
 #include <QKeyEvent>
 #include <QList>
 
-#include "dot.h"
-#include "vertex.h"
+
 #include "path.h"
 #include "gameobject.h"
 #include "barrier.h"
+#include "dot.h"
+
 
 namespace  PlayerParms{
     static QVector<QColor> DotColors = {
@@ -28,14 +29,15 @@ class Player :public QObject, public QGraphicsRectItem
     Q_OBJECT
 public:
     explicit Player(QObject *parent = nullptr);
-    explicit Player(QPoint startPoint,QGraphicsScene * scene,Path * path, QObject * parent = nullptr);
-    QVector<Vertex *> Vertices();
+    explicit Player(QPoint startPoint,QGraphicsScene * scene,DotManager * dm, QObject * parent = nullptr);
+
 signals:
     void dotFinish();
+    void eatADot(QPoint);
 public slots:
 
-    void deployDots();
-    void moveTo(QPoint);
+//    void deployDots();
+
     void move();
 
 
@@ -49,11 +51,11 @@ private:
     QTimer * timer;
     QPoint currentMovingVector;
     QPoint lastMovingVector;
-    QVector<Vertex *> vertices;
+//    QVector<Vertex *> vertices;
     QVector<QPointF> movingVectors;
     Path * path;
     int graphArray[MAZE_WIDTH + 1][MAZE_HEIGHT + 1];
-    Vertex * tempVertex;
+//    Vertex * tempVertex;
     bool flag;
 
 private:
@@ -68,6 +70,8 @@ private:
     // QGraphicsItem interface
 protected:
     void keyPressEvent(QKeyEvent *event);
+
+
 
 };
 

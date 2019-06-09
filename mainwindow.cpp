@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     view->setScene(scene);
     this->dashBoard = new DashBoard();
     this->dashBoard->setPlainText(QString("0"));
+    this->scene->addItem(dashBoard);
 
     this->view->setFixedSize(900,1000);
     this->view->setSceneRect(50,250, 780,450);
@@ -32,11 +33,18 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     }
 
 
-    player = new Player(QPoint(1,10),scene,this->path);
+    elf = new elf1(QPoint(30,30),scene);
+    scene->addItem(elf);
+
+    dm = new DotManager(scene,maze,dashBoard);
+    dm->deployTheDots(QPoint(1,1));
+    dm->deleteTheDot(QPoint(1,10));
+    dm->deleteTheDot(QPoint(1,1));
+
+
+    player = new Player(QPoint(1,10),scene,dm);
     player->setFlag(QGraphicsItem::ItemIsFocusable);
     player->setFocus();
-
-
 #ifdef DEBUG
     showDebugCoordinate();
 
@@ -46,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->debugging,SIGNAL(clicked(bool)),this,SLOT(debuggingButton()));
     connect(ui->nmode, SIGNAL(clicked(bool)), this, SLOT(nmodeButton()));
     connect(ui->test, SIGNAL(clicked(bool)), this, SLOT(testButton()));
-    connect(player,SIGNAL(dotFinish()),this,SLOT(checkVertex()));
 }
 
 void MainWindow::resetBarriers(){
@@ -165,24 +172,18 @@ void MainWindow::nmodeButton(){
 }
 
 void MainWindow::testButton(){
-//    mirrorTheGraph(Ui::mirrorFunctionX_13,this->barriers);
-//    this->player->move();
-//    static int i = 0;
-//    if(i < this->vertices.size()){
-//        vertices[i]->hide();
-//        ++i;
-//    }
-//    this->player->moveTo(QPoint(1,1));
-    this->path->PathFinding(this->player->pos().toPoint() / COORDINATE_SCALE,QPoint(25,19));
 
+//    qDebug()<< dm->Dots()[8][10]->pos();
+//    this->path->PathFinding(this->player->pos().toPoint() / COORDINATE_SCALE,QPoint(25,19));
+    elf->test();
 }
 
 void MainWindow::checkVertex(){
-    this->vertices = player->Vertices();
+//    this->vertices = player->Vertices();
     qDebug()<<"vertices.size = "<<this->vertices.size();
     elf_base * elf = new elf1(QPoint(2,1) * COORDINATE_SCALE,scene);
     scene->addItem(elf);
-    this->path = new Path(QPoint(1,1),scene,this->MazeArray());
+//    this->path = new Path(QPoint(1,1),scene,this->MazeArray());
 }
 
 QVector<QVector<bool> > MainWindow::MazeArray(){
